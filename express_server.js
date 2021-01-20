@@ -83,7 +83,6 @@ app.post("/urls/:shortURL/delete", (req,res) => {
     res.render("urls_error", templateVars);
   }
 });
-/*
 // /U/:SHORTURL => access the actual link (longURL)
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
@@ -117,10 +116,50 @@ app.get("/u/:shortURL", (req, res) => {
   } else {
     res.redirect(`http://${longURL}`);
   }
-});*/
+});
 
-//const password = "purple-monkey-dinosaur"; // found in the req.params object
-//const hashedPassword = bcrypt.hashSync(password, 10);
+// /LOGIN
+app.get("/login", (req, res) => {
+  let templateVars = {
+    user: users[req.session.user_id]
+  };
+  if (templateVars.user) {
+    res.redirect("/urls");
+  } else {
+    res.render("urls_login", templateVars);
+  }
+});
+
+app.post("/login", (req,res) => {
+  const { email, password } = req.body;
+  const user = getUserByEmail(email, users);
+  if (!user) {
+    let templateVars = {
+      status: 401,
+      message: 'Email not found',
+      user: users[req.session.user_id]
+    }
+    res.status(401);
+    res.render("urls_error", templateVars);
+  } else if (!bcrypt.compareSync(password, user.password)) {
+    let templateVars = {
+      status: 401,
+      message: 'Password incorrect',
+      user: users[req.session.user_id]
+    }
+    res.status(401);
+    res.render("urls_error", templateVars);
+  } else {
+    req.session.user_id = user.id;
+    res.redirect("/urls");
+  }
+});
+
+// /LOGOUT
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/urls");
+});
 
 
 app.listen(PORT, () => {
