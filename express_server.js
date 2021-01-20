@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 3050; // default port 3050
 const bodyParser = require("body-parser");
+//const bcrypt = require('bcrypt');
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
@@ -26,20 +28,62 @@ app.get("/urls", (req, res) => {
     const templateVars = { urls: urlDatabase };
     res.render("urls_index", templateVars);
 });
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
 
-/*
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL:"card-title" };
   res.render("urls_show", templateVars);
-});*/
+});
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
-app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+
+
+app.post("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = req.body.longURL;
+  const newDate = new Date();
+  if (req.session.user_id === urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL].longURL = longURL;
+    urlDatabase[shortURL].visitCount = 0;
+    urlDatabase[shortURL].visitHistory = [];
+    urlDatabase[shortURL].uVisitCount = 0;
+    urlDatabase[shortURL].visitorIDList = [];
+    urlDatabase[shortURL].dateCreation = newDate;
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    let templateVars = {
+      status: 401,
+      message: 'You are not allowed to edit that TinyURL',
+      user: users[req.session.user_id]
+    }
+    res.status(401);
+    res.render("urls_error", templateVars);
+  }
 });
+
+
+// /URLS/:SHORTURL/DELETE
+app.post("/urls/:shortURL/delete", (req,res) => {
+  const shortURL = req.params.shortURL;
+  if (req.session.user_id === urlDatabase[shortURL].userID) {
+    delete urlDatabase[req.params.shortURL];
+    res.redirect("/urls");
+  } else {
+    let templateVars = {
+      status: 401,
+      message: 'You are not allowed to delete that TinyURL',
+      user: users[req.session.user_id]
+    }
+    res.status(401);
+    res.render("urls_error", templateVars);
+  }
+});
+/*
 // /U/:SHORTURL => access the actual link (longURL)
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
@@ -73,19 +117,15 @@ app.get("/u/:shortURL", (req, res) => {
   } else {
     res.redirect(`http://${longURL}`);
   }
-});
-
-/*
-app.get("/set", (req, res) => {
-    const a = 1;
-    res.send(`a = ${a}`);
-});
-   
-   app.get("/fetch", (req, res) => {
-    res.send(`a = ${a}`);
 });*/
+
+//const password = "purple-monkey-dinosaur"; // found in the req.params object
+//const hashedPassword = bcrypt.hashSync(password, 10);
 
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+/*bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword); // returns true
+bcrypt.compareSync("pink-donkey-minotaur", hashedPassword); // returns false
+*/
