@@ -1,27 +1,25 @@
+<!-- views/partials/_header.ejs -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+<title>TinyApp Example</title>
+
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark" style="background-color:rgb(0, 163, 163)">
-    <a class="navbar-brand" href="/urls" style="font-family: 'Pacifico', cursive; font-size: 35px; padding-top: 0px;">TinyApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New Short Link</a>
-      </div>
-    </div>
-    <% if (user) { %>
-    <form class="form-inline" action="/logout" method="POST" style="padding-top: 0px">
-      <%= user.email %>
-      <button type="submit" class="btn btn-outline-dark" style="margin-left: 1em">Logout</button>
-    </form>
-    <% } else { %>
-    <form class="form-inline" action="/login" method="GET">
-      <button type="submit" class="btn btn-outline-light" style="margin-right: 2em;">Login</button>
-    </form>
-    <form class="form-inline" action="/register" method="GET">
-      <button type="submit" class="btn btn-outline-light">Register</button>
-    </form>
-    <% } %>
-  </nav>
+<h1>TinyApp</h1>
+
+<% if (locals.user) { %>
+<h3>Logged in As: <%= user["email"] %></h3>
+<form method="POST" action="/logout">
+ <button type="submit" class="btn btn-primary">Logout</button>
+</form>
+<%} else { %>
+ <!-- Already have an account?  -->
+<strong><a href="/login">Login</a></strong>
+|
+<!-- Not yet a member? -->
+<strong><a href="/register">Register</a></strong> 
+<%} %>
 </header>

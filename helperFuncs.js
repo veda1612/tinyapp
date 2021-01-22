@@ -1,8 +1,14 @@
-cconst bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
-const generateRandomString = () => {
-  return Math.random().toString(36).substring(6);
-};
+// Function to generate random string - a shortURL from longURL
+function generateRandomString() {
+  return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0,5);
+}
+
+// Function to generate random string - a shortURL from longURL
+function generateRandomUserId() {
+  return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
+}
 
 // Return the user object which match the email address
 const getUserByEmail = (email, database) => {
@@ -43,5 +49,14 @@ const addURL = (longURL, userID, db) => {
   db[shortURL] = { userID, longURL, dateCreation, visitCount, visitHistory, visitorIDList, uVisitCount };
   return shortURL;
 };
+// Function to lookup for existing email
+function lookupEmail (email) {
+  for (let key in users) {
+    if (email === users[key].email){
+      return users[key];
+    }
+  }
+  return false;
+}
 
-module.exports = { getUserByEmail, generateRandomString, urlsForUser, addUser, addURL };
+module.exports = { getUserByEmail, generateRandomString, generateRandomUserId, lookupEmail, urlsForUser, addUser, addURL };
