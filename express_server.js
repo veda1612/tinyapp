@@ -28,36 +28,7 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-/* HELPER FUNCTIONS
-// Function to lookup for existing email
-function lookupEmail (email) {
-  for (let key in users) {
-    if (email === users[key].email){
-      return users[key];
-    }
-  }
-  return false;
-}
-// Function to generate random string - a shortURL from longURL
-function generateRandomString() {
-  return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0,5);
-}
 
-// Function to generate random string - a shortURL from longURL
-function generateRandomUserId() {
-  return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 10);
-}
-
-// Function to filter URLS as per logged in user
-function urlsForUser(id) {
-  let filteredUrls = {};
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      filteredUrls[url] = urlDatabase[url]
-    }
-  }
-  return filteredUrls;
-}*/
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -205,6 +176,3 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-/*bcrypt.compareSync("purple-monkey-dinosaur", hashedPassword); // returns true
-bcrypt.compareSync("pink-donkey-minotaur", hashedPassword); // returns false
-*/
