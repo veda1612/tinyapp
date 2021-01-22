@@ -59,4 +59,4 @@ function lookupEmail (email) {
   return false;
 }
 
-module.exports = { getUserByEmail, generateRandomString, generateRandomUserId, lookupEmail, urlsForUser, addUser, addURL };
+module.exports = { generateRandomString, generateRandomUserId, getUserByEmail,  urlsForUser, addUser, addURL, lookupEmail};

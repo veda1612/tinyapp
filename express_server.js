@@ -3,14 +3,18 @@ const app = express();
 const PORT = 3050; // default port 3050
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
-//onst { getUserByEmail, generateRandomString, generateRandomUserId, lookupEmail, urlsForUser, addUser, addURL} = require("./helperFuncs");
+const { generateRandomString, generateRandomUserId, getUserByEmail,  urlsForUser, addUser, addURL, lookupEmail} = require("./helpers");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
+/* original urlDatabase
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
+};*/
+const urlDatabase = {
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "userRandomID" },
+  "9sm5xK": { longURL: "http://www.google.com", userID: "user2RandomID" }
 };
 const users = { 
   "userRandomID": {
@@ -24,12 +28,7 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-
-
-
-
-
-
+/* HELPER FUNCTIONS
 // Function to lookup for existing email
 function lookupEmail (email) {
   for (let key in users) {
@@ -58,7 +57,7 @@ function urlsForUser(id) {
     }
   }
   return filteredUrls;
-}
+}*/
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -142,7 +141,7 @@ app.get("/login", (req, res) => {
   let templateVars = { email: req.body.login, password: req.body.password };
   res.render("urls_login", templateVars);  
 });
-//POST/LOGIN-RECTORED
+//POST/LOGIN-REFACTORED
 app.post("/login", (req, res) => {
   const enteredEmail = req.body.login
   const enteredPassword =  req.body.password
@@ -195,6 +194,11 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
   }
 
+});
+//LOGOUT
+app.post("/logout", (req, res) => {
+  req.session = null; 
+  res.redirect("/urls");
 });
 
 
